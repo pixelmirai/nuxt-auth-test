@@ -37,6 +37,33 @@ const handleSubmit = async () => {
     loading.value = false
   }
 }
+
+
+
+
+async function googleInit(){
+
+
+
+window.__gsi_inited = true
+  google.accounts.id.initialize({
+    client_id: "583517203824-0sp6oqjt0o14s3i9lm7j9qmnuhrgkc52.apps.googleusercontent.com",
+    callback: async ({ credential }) => {
+      console.log("ID TOKEN:", credential)
+       await authStore.loginWithGoogle(credential);
+    },
+  })
+
+  google.accounts.id.renderButton(
+    document.getElementById("googleBtn"),
+    { theme: "outline", size: "large" }
+  )
+}
+
+onMounted(() => {
+ googleInit();
+})
+
 </script>
 
 <template>
@@ -75,6 +102,8 @@ const handleSubmit = async () => {
       <span>{{ loading ? 'Signing in…' : 'Sign in' }}</span>
     </button>
 
+    
+
     <div class="flex items-center justify-between text-sm text-gray-600">
       <span>Don't have an account?</span>
       <button type="button" class="font-medium text-indigo-600 hover:text-indigo-700" @click="emit('switchToSignup')">
@@ -82,4 +111,8 @@ const handleSubmit = async () => {
       </button>
     </div>
   </form>
+
+    <div id="googleBtn">
+
+    </div>
 </template>

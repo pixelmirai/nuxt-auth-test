@@ -80,22 +80,24 @@ export const useAuthStore = defineStore('auth', {
 
         async register(email, password, name) {
             const url = BASE_URL + '/auth/register'
-
-            const { data } = await axios.post(
+            
+            try {
+                  const response = await axios.post(
                 url,
                 { email, password, name },
                 { withCredentials: true }
             )
-
-            // IMPORTANT:
-            // registration does NOT authenticate the user
-            // backend status = pending_verification
-
-            // You may want to store returned user for UI messaging
-            this.user = data
+            
+            console.log(response)
+            
+            
             this.status = 'unauthenticated'
 
-            return data
+            return response?.data?.data
+            } catch (error) {
+                console.log(error);
+            }
+          
         },
 
         async login(email, password) {
@@ -127,6 +129,35 @@ export const useAuthStore = defineStore('auth', {
                     this.setAuthenticated(accessToken,user)
             }
         },
+
+      async loginWithGoogle(idToken){
+               const response = await axios.post(
+                `${BASE_URL}/auth/login/google`,
+                {
+                idToken
+                },
+                {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true // only if you use cookies/sessions
+                }
+            )
+          
+
+            const accessToken = response.data.data.accessToken;
+            const user = response.data.data.user;
+            
+            if(accessToken && user){
+                    this.setAuthenticated(accessToken,user)
+            } else {
+                throw new Error("accessToken or user missing")
+            }
+            
+
+            return response.data.data
+          
+      },
 
         async refresh() {
             const response = await axios.post(

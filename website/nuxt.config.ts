@@ -18,6 +18,7 @@ export default defineNuxtConfig({
           href: "https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css",
         },
       ],
+      script: [{ src: "https://accounts.google.com/gsi/client", async: true, defer: true }],
     },
   },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
