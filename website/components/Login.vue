@@ -45,19 +45,19 @@ async function googleInit(){
 
 
 
-window.__gsi_inited = true
-  google.accounts.id.initialize({
-    client_id: "583517203824-0sp6oqjt0o14s3i9lm7j9qmnuhrgkc52.apps.googleusercontent.com",
-    callback: async ({ credential }) => {
-      console.log("ID TOKEN:", credential)
-       await authStore.loginWithGoogle(credential);
-    },
-  })
+    window.__gsi_inited = true
+    google.accounts.id.initialize({
+        client_id: "583517203824-0sp6oqjt0o14s3i9lm7j9qmnuhrgkc52.apps.googleusercontent.com",
+        callback: async ({ credential }) => {
+        console.log("ID TOKEN:", credential)
+        await authStore.loginWithGoogle(credential);
+        },
+    })
 
-  google.accounts.id.renderButton(
-    document.getElementById("googleBtn"),
-    { theme: "outline", size: "large" }
-  )
+    google.accounts.id.renderButton(
+        document.getElementById("googleBtn"),
+        { theme: "outline", size: "large" }
+    )
 }
 
 onMounted(() => {

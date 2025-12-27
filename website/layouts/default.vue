@@ -17,7 +17,8 @@ onMounted(() => {
   }
 })
 
-const isAuthenticated = computed(() => status.value === 'authenticated')
+const isAuthenticated = computed(() => status.value === 'authenticated' )
+
 const isChecking = computed(() => status.value === 'unknown')
 </script>
 

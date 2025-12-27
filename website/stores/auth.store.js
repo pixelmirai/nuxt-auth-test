@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         // ---- state setters (single source of truth) ----
         setAuthenticated(accessToken, user = null) {
-            console.log("seting auth ", accessToken)
+            
             if (accessToken) this.accessToken = accessToken
             if (user) this.user = user
             this.status = 'authenticated'
@@ -171,13 +171,28 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async logout() {
-            // If you have an endpoint; otherwise just clear local state.
+
             try {
                 await axios.post(`${BASE_URL}/auth/logout`, {}, { withCredentials: true })
             } catch (_) {
-                // ignore network errors; local logout still happens
+
             }
             this.setUnauthenticated()
-        }
+        },
+
+        async verifyEmail(){
+
+            const url = new URL(window.location.href);
+            const q = url.searchParams.get('token');
+            //const h = new URLSearchParams(url?.hash?.slice(1));
+            const token = q;
+
+            const response
+                = await axios.post(`${BASE_URL}/auth/verify-email`,
+                { token },
+                {withCredentials: true}
+                );
+            return response;
+        },
     }
 })
