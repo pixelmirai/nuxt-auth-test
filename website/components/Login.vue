@@ -26,9 +26,9 @@ const handleSubmit = async () => {
 
   loading.value = true
   try {
-    console.log("in form before")
+
     await authStore.login(email.value.trim(), password.value)
-      console.log("in form after")
+
     success.value = 'Logged in successfully.'
   } catch (err) {
     const message = err?.data?.message || err?.message || 'Login failed.'

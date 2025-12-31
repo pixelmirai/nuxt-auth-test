@@ -101,8 +101,7 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async login(email, password) {
-            console.log("auth store login")
-            // Hybrid assumption: server sets refresh cookie + returns accessToken (and maybe user)
+       
             const response = await axios.post(
                 `${BASE_URL}/auth/login`,
                 { email, password },
@@ -121,13 +120,15 @@ export const useAuthStore = defineStore('auth', {
            
 
             // If backend doesn't return user, load it via /me (Bearer)
-            if (!this.user) {
-                const me = await axios.get(`${BASE_URL}/users/me`, {
-                    headers: this._authHeaders(),
-                    withCredentials: true
-                })
-                    this.setAuthenticated(accessToken,user)
-            }
+            // if (!this.user) {
+            //     const me = await axios.get(`${BASE_URL}/users/me`, {
+            //         headers: this._authHeaders(),
+            //         withCredentials: true
+            //     })
+            //         this.setAuthenticated(accessToken,user)
+            // }
+
+            return response;
         },
 
       async loginWithGoogle(idToken){
@@ -178,6 +179,18 @@ export const useAuthStore = defineStore('auth', {
 
             }
             this.setUnauthenticated()
+        },
+
+        async resendVerification(email){
+
+            if(!email){
+                throw new Error("Email missing")
+            }
+
+            const response = axios.post(`${BASE_URL}/auth/resend-verification`,{
+                email
+            })
+            return response;
         },
 
         async verifyEmail(token){

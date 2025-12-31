@@ -28,9 +28,7 @@ const canSubmit = computed(() => {
 
 function goToVerifyEmail(email){
   if(!email) return;
-  console.log("the email",email)
   sessionStorage.setItem("pendingEmail",email);
-    console.log("in session storage",sessionStorage.getItem("pendingEmail"))
   router.push("/auth/verify-email")
 }
 

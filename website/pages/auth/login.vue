@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '~/stores/auth.store'
+import { useRouter } from 'vue-router'
 
-definePageMeta({ layout: false })
 
+const router = useRouter();
 const authStore = useAuthStore()
 
 const email = ref('')
@@ -16,6 +17,21 @@ const canSubmit = computed(
   () => email.value.trim().length > 0 && password.value.trim().length > 0 && !loading.value
 )
 
+
+function goToVerifyEmail(email:any){
+  if(!email) return;
+  sessionStorage.setItem("pendingEmail",email);
+  router.push("/auth/verify-email")
+}
+
+
+async function handleError(code:String){
+  if(code === "EMAIL_NOT_VERIFIED"){
+    await authStore.resendVerification(email.value)
+    goToVerifyEmail(email.value);
+  }
+}
+
 const handleSubmit = async () => {
   error.value = ''
   success.value = ''
@@ -27,11 +43,14 @@ const handleSubmit = async () => {
 
   loading.value = true
   try {
-    await authStore.login(email.value.trim(), password.value)
+    const response = await authStore.login(email.value.trim(), password.value)
     success.value = 'Logged in successfully.'
   } catch (err: any) {
     const message = err?.data?.message || err?.message || 'Login failed.'
     error.value = message
+    const code = err.response.data.code;
+    await handleError(code);
+
   } finally {
     loading.value = false
   }
