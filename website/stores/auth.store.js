@@ -88,12 +88,12 @@ export const useAuthStore = defineStore('auth', {
                 { withCredentials: true }
             )
             
-            console.log(response)
+     
             
             
             this.status = 'unauthenticated'
 
-            return response?.data?.data
+            return response;
             } catch (error) {
                 console.log(error);
             }
@@ -180,12 +180,16 @@ export const useAuthStore = defineStore('auth', {
             this.setUnauthenticated()
         },
 
-        async verifyEmail(){
+        async verifyEmail(token){
+
+            if(!token){
 
             const url = new URL(window.location.href);
             const q = url.searchParams.get('token');
             //const h = new URLSearchParams(url?.hash?.slice(1));
-            const token = q;
+            token = q;
+
+            }
 
             const response
                 = await axios.post(`${BASE_URL}/auth/verify-email`,

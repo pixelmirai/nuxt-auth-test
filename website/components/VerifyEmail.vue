@@ -5,13 +5,16 @@ function sendToken(){
 
 }
 
+const email = ref("your email.")
+
 onMounted(async ()=>{
+    email.value = sessionStorage.getItem("pendingEmail");
 
 })
 
 </script>
 <template>
     <div class="">
-          Verifying email...  
+          Verification link sent to{{email  }}
     </div>
 </template>

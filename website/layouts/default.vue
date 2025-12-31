@@ -29,15 +29,7 @@ const isChecking = computed(() => status.value === 'unknown')
     </header>
 
     <main class="min-h-[90vh]">
-      <div v-if="isChecking" class="flex min-h-[60vh] items-center justify-center text-gray-600">
-        Checking authentication…
-      </div>
-      <template v-else-if="isAuthenticated">
-        <slot />
-      </template>
-      <template v-else>
-        <Auth />
-      </template>
+      <slot></slot>
     </main>
     <footer>
 
