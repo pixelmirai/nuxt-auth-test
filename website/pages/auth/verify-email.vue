@@ -51,14 +51,14 @@ async function verifyEmail() {
     }
   } else {
     status.value = 'waiting'
-    errorMessage.value = 'No verification token found. Request a new link below.'
+    errorMessage.value = ''
   }
 }
 
 onMounted(async () => {
   await verifyEmail();
   email.value = sessionStorage.getItem("pendingEmail");
-  console.log("in new pge", sessionStorage.getItem("pendingEmail"))
+
 
 })
 

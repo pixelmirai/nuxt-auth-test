@@ -8,10 +8,10 @@ import { useAuthStore } from '~/stores/auth.store'
 const authStore = useAuthStore()
 const router = useRouter()
 
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
+const name = ref('pixel')
+const email = ref('pixelmirai@gmail.com')
+const password = ref('Qqsb8ku5x!')
+const confirmPassword = ref('Qqsb8ku5x!')
 const loading = ref(false)
 const error = ref('')
 const success = ref('')
@@ -48,7 +48,8 @@ const handleSubmit = async () => {
     goToVerifyEmail(response.data.data.user.email)
 
   } catch (err) {
-    const message = err?.data?.message || err?.message || 'Signup failed.'
+    const message = err?.response?.data?.message || err?.message || 'Signup failed.'
+    
     error.value = message
   } finally {
     loading.value = false

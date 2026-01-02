@@ -10,7 +10,7 @@ const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
-const error = ref('')
+const errorMessage = ref('')
 const success = ref('')
 
 const canSubmit = computed(
@@ -18,26 +18,49 @@ const canSubmit = computed(
 )
 
 
-function goToVerifyEmail(email:any){
-  if(!email) return;
-  sessionStorage.setItem("pendingEmail",email);
+function goToVerifyEmail(email: any) {
+  if (!email) return;
+  sessionStorage.setItem("pendingEmail", email);
   router.push("/auth/verify-email")
 }
 
+//for password logins
+async function handleError(error: any) {
+  console.log(error)
+  const code = error?.response?.data?.code;
+  if (code) {
 
-async function handleError(code:String){
-  if(code === "EMAIL_NOT_VERIFIED"){
-    await authStore.resendVerification(email.value)
-    goToVerifyEmail(email.value);
+    if (code === "INVALID_CREDENTIALS") {
+      errorMessage.value = "Email or passwords incorrect.";
+    }
+    else if (code === "EMAIL_NOT_VERIFIED") {
+      await authStore.resendVerification(email.value)
+      goToVerifyEmail(email.value);
+    } else if (code === "USER_BANNED") {
+      errorMessage.value = "you are banned"
+    }
+
+  } else if (error?.status) {
+    const status = error.status;
+    if (status === 401) {
+      errorMessage.value = "Email or passwords incorrect.";
+    }
+    else if (status === 403) {
+      await authStore.resendVerification(email.value)
+      goToVerifyEmail(email.value);
+    }
+  } else {
+    errorMessage.value = "Login failed!"
   }
+
 }
 
 const handleSubmit = async () => {
-  error.value = ''
+  errorMessage.value = ''
   success.value = ''
 
   if (!email.value.trim() || !password.value.trim()) {
-    error.value = 'Please enter your email and password.'
+    errorMessage.value = 'Please enter your email and password.'
     return
   }
 
@@ -45,12 +68,9 @@ const handleSubmit = async () => {
   try {
     const response = await authStore.login(email.value.trim(), password.value)
     success.value = 'Logged in successfully.'
+    router.push("")
   } catch (err: any) {
-    const message = err?.data?.message || err?.message || 'Login failed.'
-    error.value = message
-    const code = err.response.data.code;
-    await handleError(code);
-
+    await handleError(err);
   } finally {
     loading.value = false
   }
@@ -61,8 +81,8 @@ async function googleInit() {
   const google = (window as any).google
   if (!google?.accounts?.id) return
 
-  ;(window as any).__gsi_inited = true
-  google.accounts.id.initialize({
+    ; (window as any).__gsi_inited = true
+    google.accounts.id.initialize({
     client_id: '583517203824-0sp6oqjt0o14s3i9lm7j9qmnuhrgkc52.apps.googleusercontent.com',
     callback: async ({ credential }: { credential: string }) => {
       await authStore.loginWithGoogle(credential)
@@ -82,16 +102,19 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-900 text-white">
-    <div class="mx-auto grid min-h-screen max-w-5xl grid-cols-1 items-center px-4 py-12 gap-10 sm:px-6 lg:max-w-6xl lg:grid-cols-2 lg:py-16">
+    <div
+      class="mx-auto grid min-h-screen max-w-5xl grid-cols-1 items-center px-4 py-12 gap-10 sm:px-6 lg:max-w-6xl lg:grid-cols-2 lg:py-16">
       <div class="space-y-6 text-center lg:text-left">
-        <p class="mx-auto inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-200 ring-1 ring-white/20 sm:text-sm lg:mx-0">
+        <p
+          class="mx-auto inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-200 ring-1 ring-white/20 sm:text-sm lg:mx-0">
           Access Portal
         </p>
         <h1 class="text-3xl font-semibold leading-tight text-white sm:text-4xl lg:text-5xl">
           Welcome back. Sign in to keep building amazing things.
         </h1>
         <p class="mx-auto max-w-2xl text-base text-slate-200 sm:text-lg lg:mx-0">
-          Use your account credentials or continue with Google. Security-first authentication keeps your data safe while you move fast.
+          Use your account credentials or continue with Google. Security-first authentication keeps your data safe while
+          you move fast.
         </p>
         <div class="grid grid-cols-1 gap-3 text-sm text-indigo-50 sm:grid-cols-2">
           <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -121,35 +144,25 @@ onMounted(() => {
           <form class="mt-6 space-y-4" @submit.prevent="handleSubmit">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-slate-700">Email</label>
-              <input
-                v-model="email"
-                type="email"
-                placeholder="you@example.com"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              />
+              <input v-model="email" type="email" placeholder="you@example.com"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100" />
             </div>
 
             <div class="space-y-2">
               <label class="text-sm font-semibold text-slate-700">Password</label>
-              <input
-                v-model="password"
-                type="password"
-                placeholder="Enter your password"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              />
+              <input v-model="password" type="password" placeholder="Enter your password"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100" />
             </div>
 
             <div class="min-h-[24px] text-sm">
-              <p v-if="error" class="text-sm font-semibold text-red-600">{{ error }}</p>
+              <p v-if="errorMessage" class="text-sm font-semibold text-red-600">{{ errorMessage }}</p>
               <p v-else-if="success" class="text-sm font-semibold text-green-600">{{ success }}</p>
             </div>
 
-            <button
-              type="submit"
-              :disabled="!canSubmit"
-              class="flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-400"
-            >
-              <span v-if="loading" class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+            <button type="submit" :disabled="!canSubmit"
+              class="flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-400">
+              <span v-if="loading"
+                class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
               <span>{{ loading ? 'Signing in...' : 'Sign in' }}</span>
             </button>
           </form>
