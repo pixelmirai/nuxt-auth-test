@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', {
 
         // ---- core lifecycle ----
         async init() {
-
+            console.log("auth store init")
             try {
 
 
@@ -45,6 +45,7 @@ export const useAuthStore = defineStore('auth', {
             } catch (err) {
                 console.log(`any errors? ${err}`)
                 this.setUnauthenticated()
+                
             }
         },
 
@@ -201,5 +202,12 @@ export const useAuthStore = defineStore('auth', {
                 );
             return response;
         },
+        getToken(){
+            if(!this.accessToken){
+                console.log(this.accessToken)
+                //throw new Error("Auth token missing!")
+            }
+            return `Bearer ${this.accessToken}`
+        }
     }
 })

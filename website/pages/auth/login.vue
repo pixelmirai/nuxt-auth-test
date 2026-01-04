@@ -68,7 +68,7 @@ const handleSubmit = async () => {
   try {
     const response = await authStore.login(email.value.trim(), password.value)
     success.value = 'Logged in successfully.'
-    router.push("")
+    router.push("/")
   } catch (err: any) {
     await handleError(err);
   } finally {

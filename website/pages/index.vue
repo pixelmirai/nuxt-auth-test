@@ -10,6 +10,7 @@ const { user, status } = storeToRefs(authStore)
 
 onMounted(async () => {
   if (status.value === 'unknown') {
+    console.log("initializing")
     await authStore.init()
   }
 
