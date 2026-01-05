@@ -11,6 +11,9 @@ const { user } = storeToRefs(authStore);
 
 const BASE_URL = 'http://localhost:3002'
 
+const successMessage = ref("")
+const errorMessage = ref("")
+
 function redirectToAuth(){
   router.push("/")
 }
@@ -71,9 +74,15 @@ async function requestPasswordReset(baseUrl, email){
 
   try {
     const res = await withHandledErrors(req);
+
+    ///
+    successMessage.value = res.data?.message || "Reset link sent to your email!";
+    ///
+    return res;
     console.log(res);
   } catch (error) {
     console.log(error);
+    errorMessage.value = error;
   }
 }
 
