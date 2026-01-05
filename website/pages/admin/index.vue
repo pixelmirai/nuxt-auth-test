@@ -86,7 +86,7 @@ async function getUsers(baseUrl) {
     const url = `${baseUrl}/admin/users`
     const config = { headers: { Authorization: token }, withCredentials: true }
 
-    const response = await axios.get(url,config)
+    const response = await axios.get(url, config)
     return response.data.data.users;
   }
   try {
@@ -286,7 +286,7 @@ watch(status, async () => {
       user.value = await getUserByEmail(BASE_URL, email);
 
 
-       console.log("getting single user")
+      console.log("getting single user")
       const id = users.value[0].id;
       console.log(id)
       user.value = await getUserById(BASE_URL, id);
@@ -311,38 +311,35 @@ onMounted(async () => {
 
 <template>
 
-  <div class="text-green-400">
-    {{ successMessage }}
-  </div>
   <div>
-    {{ errorMessage }}
-  </div>
-  <div>
-    {{ status }}
-  </div>
-  <div>
-    single user {{ user }}
-  </div>
-  ---------------------
-  <div v-if="users" class="w-full flex flex-col">
-    <div v-for="user in users" class="flex justify-between max-w-screen-xl">
-      <div>
-        {{ user.email }}
-      </div>
-      <div>status {{ user.status }}</div>
-      <div class="flex gap-2 p-1 ">
-        <div v-if="user.status !== `banned`">
-          <button @click="banUser(BASE_URL, user.id)" class="p-4 bg-yellow-500 text-white">Ban User</button>
-        </div>
-        <div v-if="user.status === `banned`">
-          <button @click="unbanUser(BASE_URL, user.id)" class="p-4 bg-green-500 text-white">Unban User</button>
-        </div>
-        <div>
-          <button @click="deleteUser(BASE_URL, user.id)" class="p-4 bg-red-500 text-white">Delete User</button>
-        </div>
 
+
+    <div class="header" >
+        
+    </div>
+
+    <div v-if="users" class="w-full flex flex-col">
+      <div v-for="user in users" class="flex justify-between max-w-screen-xl">
+        <div>
+          {{ user.email }}
+        </div>
+        <div>status {{ user.status }}</div>
+        <div class="flex gap-2 p-1 ">
+          <div v-if="user.status !== `banned`">
+            <button @click="banUser(BASE_URL, user.id)" class="p-4 bg-yellow-500 text-white">Ban User</button>
+          </div>
+          <div v-if="user.status === `banned`">
+            <button @click="unbanUser(BASE_URL, user.id)" class="p-4 bg-green-500 text-white">Unban User</button>
+          </div>
+          <div>
+            <button @click="deleteUser(BASE_URL, user.id)" class="p-4 bg-red-500 text-white">Delete User</button>
+          </div>
+
+        </div>
       </div>
     </div>
+
+
 
   </div>
 </template>
