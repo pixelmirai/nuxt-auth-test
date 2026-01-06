@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', {
             } catch (err) {
                 console.log(`any errors? ${err}`)
                 this.setUnauthenticated()
-                
+
             }
         },
 
@@ -202,8 +202,33 @@ export const useAuthStore = defineStore('auth', {
                 );
             return response;
         },
-        getToken(){
-            if(!this.accessToken){
+
+        async resetPassword(newPassword, token) {
+
+            if (!token) {
+
+                const url = new URL(window.location.href);
+                const q = url.searchParams.get('token');
+                //const h = new URLSearchParams(url?.hash?.slice(1));
+                token = q;
+
+            }
+
+            if (!token) {
+                console.log("toje", token);
+                throw new Error("AAOSTNAWOINTOIEAWFO NO TOKEN")
+            }
+
+            const response = await axios.post(`${BASE_URL}/auth/reset-password`, {
+                token: token,
+                password: newPassword,
+            });
+            return response;
+        },
+
+
+        getToken() {
+            if (!this.accessToken) {
                 console.log(this.accessToken)
                 //throw new Error("Auth token missing!")
             }

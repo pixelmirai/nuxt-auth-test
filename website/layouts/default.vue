@@ -27,9 +27,9 @@ const isChecking = computed(() => status.value === 'unknown')
 <template>
   <div>
     <header class="flex justify-end sticky top-0 z-30  ">
-        <button v-if="isAuthenticated" @click="logout"  class="px-4 py-1 bg-blue-600 text-white" >Logout</button>
+      <button v-if="isAuthenticated" @click="logout"  class="px-4 py-1 bg-blue-600 text-white" >Logout</button>
       <button v-if="isAuthenticated" @click="router.push('/admin')"  class="px-4 py-1 bg-blue-600 text-white" >Admin</button>
-      <button v-if="isAuthenticated" @click="router.push('profile')"  class="px-4 py-1 bg-blue-600 text-white" >Profile</button>
+      <button v-if="isAuthenticated" @click="router.push('/profile')"  class="px-4 py-1 bg-blue-600 text-white" >Profile</button>
     </header>
 
     <main class="min-h-[90vh]">
