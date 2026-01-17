@@ -85,7 +85,14 @@ async function googleInit() {
     google.accounts.id.initialize({
     client_id: '583517203824-0sp6oqjt0o14s3i9lm7j9qmnuhrgkc52.apps.googleusercontent.com',
     callback: async ({ credential }: { credential: string }) => {
-      await authStore.loginWithGoogle(credential)
+      try {
+        await authStore.loginWithGoogle(credential);
+      router.push("/")
+      } catch (error) {
+        console.log(error)
+        errorMessage.value = error.message
+      }
+      
     }
   })
 
