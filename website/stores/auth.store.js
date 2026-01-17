@@ -1,8 +1,9 @@
 // stores/auth.js
 import { defineStore } from 'pinia'
 import axios from 'axios'
-
-const BASE_URL = 'http://localhost:3002' // e.g. 'http://localhost:3001' (or leave '' if same origin)
+const a ="http://localhost:3002"
+const b = 'https://express-auth-1-1.onrender.com'
+const BASE_URL = b // e.g. 'http://localhost:3001' (or leave '' if same origin)
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({

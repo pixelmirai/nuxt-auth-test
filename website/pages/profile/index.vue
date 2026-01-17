@@ -10,7 +10,10 @@ const router = useRouter();
 const { status } = storeToRefs(authStore)
 const { user } = storeToRefs(authStore);
 
-const BASE_URL = 'http://localhost:3002'
+const a ="http://localhost:3002"
+const b = 'https://express-auth-1-1.onrender.com'
+
+const BASE_URL = b
 
 const successMessage = ref("")
 const errorMessage = ref("")
